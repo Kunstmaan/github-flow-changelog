@@ -53,7 +53,7 @@ class ChangelogCommand extends Command {
             if (empty($pullRequest['milestone'])){
                 $milestone = "No Milestone Selected";
             } else {
-                $milestone = $pullRequest['milestone']['title'] . " / " . $pullRequest['milestone']['due_on'];
+                $milestone = $pullRequest['milestone']['title'] . " / " . strftime("%Y-%m-%d",strtotime($pullRequest['milestone']['due_on']));
             }
 
             if(!array_key_exists($milestone, $changelog)){
