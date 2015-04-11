@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+require_once __DIR__.'/vendor/autoload.php';
+const BASE_DIR = __DIR__;
+
+$app = new \Cilex\Application('gfc', '1.0', array('console.class' => 'Kunstmaan\GitHubFlowChangelog\Application'));
+
+#$app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
+
+$app->command(new \Kunstmaan\GitHubFlowChangelog\Command\ChangelogCommand());
+
+$app->run();

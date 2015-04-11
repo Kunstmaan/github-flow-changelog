@@ -1,0 +1,20 @@
+{
+    "name": "kunstmaan/github-flow-changelog",
+    "description": "Command to generate a changelog based on Github milestones and pull requests",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Roderik van der Veer",
+            "email": "roderik.van.der.veer@kunstmaan.be"
+        }
+    ],
+    "require": {
+        "cilex/cilex":              "~1.1",
+        "symfony/yaml":             "~2.6",
+        "knplabs/github-api":       "~1.4"
+    },
+    "autoload": {
+        "psr-0": { "Kunstmaan": "src/" }
+    },
+    "bin": ["gfc"]
+}
