@@ -8,6 +8,15 @@ cd github-flow-changelog
 composer install
 ```
 
+Or install it globally.
+
+```
+composer global require kunstmaan/github-flow-changelog:@dev
+```
+
+ > Make sure you have your path configured correctly.
+ > See https://getcomposer.org/doc/03-cli.md#global for more information.
+
 ## Running
 
 ```
