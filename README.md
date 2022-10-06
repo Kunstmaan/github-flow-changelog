@@ -20,7 +20,7 @@ composer global require kunstmaan/github-flow-changelog:@dev
 ## Running
 
 ```
-./gfc changelog <github token> <organisation/user> <repository> > CHANGELOG.md
+./gfc <github token> <organisation/user> <repository> > CHANGELOG.md
 ```
 
 [Generate a token here](https://github.com/settings/applications)

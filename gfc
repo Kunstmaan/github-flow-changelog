@@ -1,18 +1,15 @@
 #!/usr/bin/env php
 <?php
 
-// installed via composer?
-if (file_exists($autoload = __DIR__.'/../../autoload.php')) {
-    require_once $autoload; 
-} else {
-    require_once __DIR__.'/vendor/autoload.php';
-}
-const BASE_DIR = __DIR__;
+require __DIR__.'/vendor/autoload.php';
 
-$app = new \Cilex\Application('gfc', '1.0', array('console.class' => 'Kunstmaan\GitHubFlowChangelog\Application'));
+use Kunstmaan\GitHubFlowChangelog\Command\ChangelogCommand;
+use Symfony\Component\Console\Application;
 
-#$app->register(new \Kunstmaan\Skylab\Provider\ProcessProvider());
+$application = new Application('echo', '1.0.0');
+$command = new ChangelogCommand();
 
-$app->command(new \Kunstmaan\GitHubFlowChangelog\Command\ChangelogCommand());
+$application->add($command);
 
-$app->run();
+$application->setDefaultCommand($command->getName(), true);
+$application->run();

@@ -1,17 +1,18 @@
 <?php
+
 namespace Kunstmaan\GitHubFlowChangelog\Command;
 
-use Cilex\Command\Command;
+use Github\AuthMethod;
 use Github\Client;
 use Github\ResultPager;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ChangelogCommand extends Command {
-
-
-    protected function configure()
+final class ChangelogCommand extends Command
+{
+    protected function configure(): void
     {
         $this
             ->setName('changelog')
@@ -23,41 +24,34 @@ class ChangelogCommand extends Command {
     }
 
 
-    /**
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
-     * @return int|null|void
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $changelog = [];
 
-        $changelog = array();
-
-        $client = new Client(
-            new \Github\HttpClient\CachedHttpClient(array('cache_dir' => '/tmp/github-api-cache'))
-        );
-        $client->authenticate($input->getArgument("token"), null, Client::AUTH_HTTP_TOKEN);
-
+        $client = new Client();
+        $client->authenticate($input->getArgument('token'), null, AuthMethod::ACCESS_TOKEN);
 
         $pullRequestAPI = $client->api('pull_request');
 
         $paginator = new ResultPager($client);
-        $parameters = array($input->getArgument("organisation"), $input->getArgument("repository"), array('state' => 'closed'));
+        $parameters = [$input->getArgument('organisation'), $input->getArgument('repository'), ['state' => 'closed']];
         $pullRequests = $paginator->fetchAll($pullRequestAPI, 'all', $parameters);
 
-        $mergedPullRequests = array_filter($pullRequests, function($pullRequest) {
-            return !empty($pullRequest["merged_at"]);
-        } );
+        $mergedPullRequests = array_filter($pullRequests, static function ($pullRequest) {
+            return !empty($pullRequest['merged_at']);
+        });
 
-        foreach( $mergedPullRequests as $pullRequest ){
+        foreach ($mergedPullRequests as $pullRequest) {
             if (empty($pullRequest['milestone'])){
-                $milestone = "No Milestone Selected";
+                $milestone = 'No Milestone Selected';
             } else {
-                $milestone = $pullRequest['milestone']['title'] . " / " . strftime("%Y-%m-%d",strtotime($pullRequest['milestone']['due_on']));
+                $dueDate = $pullRequest['milestone']['due_on'];
+                $date = $dueDate ? \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $dueDate) : new \DateTimeImmutable();
+                $milestone = $pullRequest['milestone']['title'] . " / " . $date->format('Y-m-d');
             }
 
-            if(!array_key_exists($milestone, $changelog)){
-                $changelog[$milestone] = array();
+            if (!array_key_exists($milestone, $changelog)){
+                $changelog[$milestone] = [];
             }
 
             $changelog[$milestone][] = $pullRequest;
@@ -77,5 +71,6 @@ class ChangelogCommand extends Command {
         }
 
         //var_dump($changelog);
+        return 0;
     }
 }
